@@ -6,11 +6,11 @@ use crate::load_keywords;
 
 #[derive(Debug)]
 pub struct Page {
-    score: u16,
+    pub score: u16,
     internal_links: Option<Vec<String>>,
     external_links: Option<Vec<String>>,
     keywords: Vec<String>,
-    url: String,
+    pub url: String,
 }
 
 impl Page {
@@ -80,14 +80,11 @@ impl Page {
                                 if key == "href" && value != "" {
                                     // check if link is internal or external with regex
                                     if website_regex.find(&value).is_some() {
-                                        println!("Match: {value}");
-
                                         if value.contains(&self.url) {
                                             internal_links.push(value)
                                         } else {
                                             external_links.push(value);
                                         }
-
                                     } 
                                 }
                             })

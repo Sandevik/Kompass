@@ -1,14 +1,8 @@
-mod Site;
+mod Domain;
 mod Page;
 use std::fs;
-use reqwest::{self};
 use Page::Page as _Page;
-
-#[derive(Debug)]
-struct Link {
-    site_url: String,
-    site_score: Option<u32>,
-}
+use Domain::Domain as _Domain;
 
 
 
@@ -18,9 +12,7 @@ async fn main() {
     const URL: &str = "https://younify.xyz";
     const SITEMAP_URL: &str = "https://younify.xyz/sitemap.xml";
 
-    let keywords = load_keywords();
-
-    let request_client = reqwest::Client::new();
+    let mut domain = _Domain::new(URL.to_owned(), Some(SITEMAP_URL.to_owned()));
     
     let mut page: _Page = _Page::new(URL);
     page.analyze().await;
