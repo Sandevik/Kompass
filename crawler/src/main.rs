@@ -1,3 +1,4 @@
+use std::borrow::BorrowMut;
 use std::collections::HashMap;
 use std::fs;
 use std::future::Future;
@@ -7,6 +8,7 @@ use reqwest::{self, Client};
 use quick_xml;
 use quick_xml::events::Event;
 use quick_xml::reader::Reader;
+use std::borrow::Borrow;
 
 #[derive(Debug)]
 struct Link {
@@ -32,6 +34,7 @@ impl Site {
 async fn main() {
 
     const URL: &str = "https://younify.xyz";
+    const SITEMAP_URL: &str = "https://younify.xyz/sitemap.xml";
 
     let keywords = load_keywords();
 
@@ -40,7 +43,8 @@ async fn main() {
     let mut site = extract_values(&request_client, URL, &keywords).await;
 
 
-
+    //todo: add parser for sitemap!
+    // then crawl all those pages! 
 
 
 
@@ -70,6 +74,8 @@ async fn extract_values<'a>(request_client: &Client, url: &str, keywords: &Vec<S
 
     let mut buf = Vec::new();
     let mut extracted_text = String::new();
+
+    let mut links: Vec<String> = Vec::new();
     let mut internal_links = Vec::<String>::new();
     let mut external_links = Vec::<String>::new();
 
@@ -84,16 +90,23 @@ async fn extract_values<'a>(request_client: &Client, url: &str, keywords: &Vec<S
                 extracted_text.push_str(&e.unescape().unwrap().into_owned());
             },
             Ok(Event::Start(e)) => {
-                /* match e.name().as_ref() {
+                match e.name().as_ref() {
                     b"a" => {
                         e.attributes().for_each(|attribute| {
-                            if attribute.unwrap().key. {
 
+                            let attr = attribute.clone().unwrap().clone();
+                            let key_vec = attr.key.0.to_vec();
+                            let key = String::from_utf8(key_vec).unwrap();
+                            let value = String::from_utf8(attribute.clone().unwrap().clone().value.to_vec()).unwrap();
+                            if key == "href" && value != "" {
+                                links.push(value);
                             }
+
                         })
                     }
-                } */
-                continue;
+                    _ => ()
+                }
+                
             }
             _ => ()
         }
@@ -121,6 +134,7 @@ async fn extract_values<'a>(request_client: &Client, url: &str, keywords: &Vec<S
 
     let mut site = Site::new();
 
+
     site.word_dictionary = word_dictionary;
 
     if external_links.len() > 0 {
@@ -140,6 +154,7 @@ async fn extract_values<'a>(request_client: &Client, url: &str, keywords: &Vec<S
 
     site.score = score;
 
+    println!("{links:?}");
     site
 
 }
