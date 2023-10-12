@@ -14,7 +14,7 @@ async fn main() {
 
     let mut domain = _Domain::new(URL.to_owned(), Some(SITEMAP_URL.to_owned())).await;
     domain.scan_sitemap(SITEMAP_URL).await;
-
+    domain.analyze().await;
 
 
 
