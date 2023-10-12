@@ -1,7 +1,5 @@
-use quick_xml::{Reader, events::Event, Error};
+use quick_xml::Reader;
 use regex::Regex;
-use reqwest::Method;
-
 use crate::Page::Page;
 
 #[derive(Debug)]

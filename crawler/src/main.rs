@@ -1,10 +1,7 @@
 mod Domain;
 mod Page;
 use std::fs;
-use Page::Page as _Page;
 use Domain::Domain as _Domain;
-
-
 
 #[tokio::main]
 async fn main() {
@@ -15,14 +12,6 @@ async fn main() {
     let mut domain = _Domain::new(URL.to_owned(), Some(SITEMAP_URL.to_owned())).await;
     domain.scan_sitemap(SITEMAP_URL).await;
     domain.analyze().await;
-
-
-
-
-    //todo: add parser for sitemap!
-    // then crawl all those pages! 
-
-
 
     println!("{domain:#?}");
 }
