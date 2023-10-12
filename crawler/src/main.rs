@@ -12,10 +12,10 @@ async fn main() {
     const URL: &str = "https://younify.xyz";
     const SITEMAP_URL: &str = "https://younify.xyz/sitemap.xml";
 
-    let mut domain = _Domain::new(URL.to_owned(), Some(SITEMAP_URL.to_owned()));
-    
-    let mut page: _Page = _Page::new(URL);
-    page.analyze().await;
+    let mut domain = _Domain::new(URL.to_owned(), Some(SITEMAP_URL.to_owned())).await;
+    domain.scan_sitemap(SITEMAP_URL).await;
+
+
 
 
 
@@ -24,7 +24,7 @@ async fn main() {
 
 
 
-    println!("{page:#?}");
+    println!("{domain:#?}");
 }
 
 

@@ -53,7 +53,7 @@ impl Page {
         let mut extracted_text = String::new();
         let mut internal_links = Vec::<String>::new();
         let mut external_links = Vec::<String>::new();
-        let website_regex = Regex::new(r"(?m)^(https?:\/\/)?[\w\/]+\.[\w?=\/]+$(?m)").unwrap();
+        let website_regex = Regex::new(r"(?m)^(https?:\/\/)?[\w\/\.]+\.[\w?=\/]+$(?m)").unwrap();
 
         //get links
         loop {
@@ -94,6 +94,7 @@ impl Page {
                 }
                 _ => (),
             }
+            buf.clear();
         }
 
         // Get keywords and the amount of keywords from page
