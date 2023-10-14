@@ -3,11 +3,17 @@ pragma solidity >=0.4.16 <0.9.0;
 
 contract Kompass {
 
+    uint16 constant DOMAIN_INDEX_COST = 500;
     address payable constant initiator = payable (0x1eFE73B1684d284963CF49C835059bc7D772D603);
-    mapping(string => Domain) public domains;
+
+    Domain[] public domains;
+    
+
+
+    
+
     mapping(address => RequestData) internal indexationRequests;
 
-    uint16 constant DOMAIN_INDEX_COST = 500;
 
     struct RequestData {
         string root_domain_url;
@@ -60,24 +66,55 @@ contract Kompass {
         string[] memory terms = splitString(query);
         
         // find the top rated domains for each term 
-        for (uint8 index = 0; index < terms.length; index++) {
-            string memory currentTerm = terms[index];
-
-
-
-        }
+        
 
         // return a list of the top rated pages based om the domain and search word
 
 
     }
 
+
+    // Gets all the domains that contain atleast one of the search terms
+    function getDomainsFromSearchTerms(string[] memory _search_terms) internal view returns(Domain[] storage) {
+        Domain[] memory _domains = Domain[](domains.length);
+        for (uint8 i = 0; i < _search_terms.length; i++) {
+            string memory currentTerm = _search_terms[i];
+            for (uint256 j = 0; j < domains.length; j++) {
+                if (arrayContains(domains[j].keywords, currentTerm)) {
+                    for (uint16 k = 0; k < domains.length; k++) {
+                        if (_domains[k])
+                    }
+                }
+            }
+        }
+        return _domains;
+    }
+
+    // Determines wheather an array of strings contains a certain strign value 
+    function arrayContains(string[] memory _array, string memory _search_term) private pure returns(bool) {
+        bool contain = false;
+        for (uint16 i = 0; i < _array.length; i++) {
+            if (stringsMatch(_array[i], _search_term)) {
+                contain = true;
+                break;
+            }
+        }
+        return contain;
+    }
+
+
+    function stringsMatch(string memory _string_1, string memory _string_2) private pure returns(bool) {
+        return keccak256(abi.encodePacked(_string_1)) == keccak256(abi.encodePacked(_string_2));
+    } 
+
+
     function splitString(string memory word) private pure returns(string[] memory) {
-        string[] memory terms;
+        string[] memory terms = new string[](bytes(word).length);
         string memory currentTerm = "";
-        for(uint16 i = 0; i < bytes(word).length; i++) {
-            if (bytes(word)[i] = bytes(" ")) {
-                terms.push(currentTerm);
+        bytes memory str = bytes(word);
+        for(uint16 i = 0; i < str.length; i++) {
+            if (str[i] == " ") {
+                terms[i] = currentTerm;
                 currentTerm = "";
             }
         }
