@@ -9,7 +9,7 @@ pub struct Page {
     pub score: u16,
     internal_links: Option<Vec<String>>,
     external_links: Option<Vec<String>>,
-    keywords: Vec<String>,
+    pub keywords: Vec<String>,
     pub url: String,
 }
 

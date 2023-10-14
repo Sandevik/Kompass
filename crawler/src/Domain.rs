@@ -7,6 +7,7 @@ pub struct Domain {
     root_url: String,
     internal_pages: Vec<Page>,
     summerized_score: u16,
+    keywords: Vec<String>,
     sitemap_location: Option<String>,
     urls: Option<Vec<String>>,
 }
@@ -17,6 +18,7 @@ impl Domain {
             root_url,
             internal_pages: Vec::new(),
             summerized_score: 0,
+            keywords: Vec::new(),
             sitemap_location,
             urls: None,
         }
@@ -46,7 +48,14 @@ impl Domain {
         self.internal_pages = pages;
 
         let mut summerized_score: u16 = 0;
-        let _ = &self.internal_pages.iter().for_each(|page| summerized_score += page.score);
+        let _ = &self.internal_pages.iter().for_each(|page| {
+            summerized_score += &page.score;
+            page.keywords.clone().iter().for_each(|keyword| {
+                if !self.keywords.contains(keyword) {
+                    self.keywords.push(keyword.clone());
+                }
+            });
+        });
         self.summerized_score = summerized_score;
     }
 
