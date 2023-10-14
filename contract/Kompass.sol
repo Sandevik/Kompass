@@ -45,7 +45,7 @@ contract Kompass {
 
     function requestIndexation(string memory _root_domain_url, string memory _sitemap_location) external payable {
         require(msg.value == DOMAIN_INDEX_COST, "Insufficiant funds, please check your balance and try again.");
-        bool success = recipient.send(DOMAIN_INDEX_COST)
+        bool success = initiator.send(DOMAIN_INDEX_COST);
         require(success, "Transfer failed");
         Request memory request = Request({
             root_domain_url: _root_domain_url,
