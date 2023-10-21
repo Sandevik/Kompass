@@ -43,12 +43,54 @@ contract Kompass {
         _;
     }
 
-    function createDomain(string memory _json) external onlyInitiator {
+    function createDomain(address _owner, string memory _root_url, uint16 _summerized_score, string[] memory _keywords, string[] memory _urls, string memory _sitemap_location) external onlyInitiator {
         //Create a domain with its pages from the Rust counterpart.
 
+        Domain memory domain = Domain({
+            owner: _owner,
+            root_url: _root_url,
+            summerized_score: _summerized_score,
+            keywords: _keywords,
+            urls: _urls,
+            internal_pages:  new Page[0],
+            sitemap_location: _sitemap_location
+        });
+
+        domains.push(domain);
 
 
     }
+
+    function defaultPageList() internal returns(Page[] memory) {
+        Page[] memory pages;
+        return pages;
+    }
+    
+
+    function createPage(string memory _domain_url, string[] memory _internal_links, string[] memory _external_links, uint16 _score, string[] memory _keywords, string memory _url) public onlyInitiator {
+        Domain storage domain = findDomainByUrl(_domain_url);
+
+        Page memory page = Page({
+            internal_links: _internal_links,
+            external_links: _external_links,
+            score: _score,
+            keywords: _keywords,
+            url: _url
+        });
+
+        domain.internal_pages.push(page);
+    }   
+
+    function findDomainByUrl(string memory _domain_url) internal returns(Domain storage) {
+        for (uint256 i = 0; i < domains.length; i++) {
+            if (stringsMatch(domains[i].root_url, _domain_url)) {
+                return domains[i];
+            } else {
+                continue;
+            }
+        }
+        revert("Domain not found");
+    } 
 
     function requestIndexation(string memory _root_domain_url, string memory _sitemap_location) external payable {
         require(msg.value == DOMAIN_INDEX_COST, "Insufficiant funds, please check your balance and try again.");
@@ -63,8 +105,12 @@ contract Kompass {
 
     function getSerp(string memory query) external view returns(Domain[] memory) {
         // split query into terms 
-        string[] memory terms = splitString(query);
+        string[] memory terms = splitString(query, " ");
         
+        //get domains from search terms
+        Domain[] memory _domains = getDomainsFromSearchTerms(terms);
+
+
         // find the top rated domains for each term 
         
 
@@ -75,19 +121,19 @@ contract Kompass {
 
 
     // Gets all the domains that contain atleast one of the search terms
-    function getDomainsFromSearchTerms(string[] memory _search_terms) internal view returns(Domain[] storage) {
-        Domain[] memory _domains = Domain[](domains.length);
-        for (uint8 i = 0; i < _search_terms.length; i++) {
-            string memory currentTerm = _search_terms[i];
-            for (uint256 j = 0; j < domains.length; j++) {
-                if (arrayContains(domains[j].keywords, currentTerm)) {
-                    for (uint16 k = 0; k < domains.length; k++) {
-                        if (_domains[k])
+    function getDomainsFromSearchTerms(string[] memory _search_terms) internal view returns(Domain[] memory) {
+       Domain[] memory _domains = Domain[](domains);
+       uint256 currentOffset = 0;
+       for (uint8 i = 0; i < domains.length; i++) {
+            for(uint16 j = 0; j < domains[i].keywords.length; j++){
+                for (uint8 k = 0; k < _search_terms.length; k++) {
+                    if(stringsMatch(domains[i].keywords[j], _search_terms[k])) {
+                        _domains[currentOffset] = domains[i];
                     }
                 }
             }
-        }
-        return _domains;
+       }
+       return _domains;
     }
 
     // Determines wheather an array of strings contains a certain strign value 
@@ -108,18 +154,21 @@ contract Kompass {
     } 
 
 
-    function splitString(string memory word) private pure returns(string[] memory) {
-        string[] memory terms = new string[](bytes(word).length);
+    function splitString(string memory _word, string memory _pattern) private pure returns(string[] memory) {
+        string[] memory terms = new string[](bytes(_word).length);
         string memory currentTerm = "";
-        bytes memory str = bytes(word);
+        bytes memory str = bytes(_word);
         for(uint16 i = 0; i < str.length; i++) {
-            if (str[i] == " ") {
+            string memory char = string(abi.encodePacked(str[i]));
+            if (stringsMatch(char, _pattern)) {
                 terms[i] = currentTerm;
                 currentTerm = "";
             }
         }
         return terms;
     } 
+
+
 
 }
 
