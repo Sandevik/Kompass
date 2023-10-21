@@ -26,7 +26,7 @@ export default function Home() {
 
 
   return (
-    <main className={`bg-gray-200 h-[100vh] grid place-items-center`}>
+    <main className={`bg-gray-200 h-[100vh] grid place-items-center background-image`}>
       <div className="flex flex-col gap-10 items-center">
         <div className="flex flex-col items-center">
           <img src="/Kompass2d.png" className="h-40 w-40" alt="" />

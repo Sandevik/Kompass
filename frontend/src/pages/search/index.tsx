@@ -1,7 +1,5 @@
 import SER from '@/components/SER';
 import SearchArea from '@/components/SearchArea';
-import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/router';
 
 const pages: Page[] = [
   {
@@ -81,7 +79,7 @@ export default function index() {
   }
 
   return (
-    <main className="bg-gray-300 h-[100vh]">
+    <main className="bg-gray-300 h-[100vh] background-image">
 
       <SearchArea />
       <SER pages={domains.map(domain => (getRelevantPage(domain)))}/>
