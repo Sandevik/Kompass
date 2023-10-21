@@ -37,7 +37,7 @@ export default function Home() {
             <input type="text" className="p-2 h-full w-[500px] rounded-l-md text-lg" placeholder='Find your way...' value={query} onChange={(e) => setQuery(e.target.value)} />
             <BiSearch className="w-7 h-7 absolute right-1 top-2 text-gray-500"/>
           </div>
-          <button onClick={()=> router.push(`/search?q=${query.split(" ").join("+")}`)} className="w-20 bg-blue-200 h-full  rounded-r-md font-semibold text-xl hover:bg-blue-300 transition-colors">Go</button>
+          <button onClick={()=> router.push(`/search?q=${query.split(" ").join("+")}`)} className="w-20 bg-blue-200 h-full text-gray-600 rounded-r-md font-semibold text-xl hover:bg-blue-300 transition-colors">Find</button>
         </div>
       </div>
     </main>
