@@ -6,6 +6,8 @@ use crate::load_keywords;
 
 #[derive(Debug)]
 pub struct Page {
+    pub title: String,
+    pub description: String,
     pub score: u16,
     internal_links: Option<Vec<String>>,
     external_links: Option<Vec<String>>,
@@ -16,6 +18,8 @@ pub struct Page {
 impl Page {
     pub fn empty() -> Self {
         Page {
+            title: String::new(),
+            description: String::new(),
             score: 0,
             internal_links: None,
             external_links: None,
@@ -25,6 +29,8 @@ impl Page {
     }
     pub fn new(url: &str) -> Self {
         Page {
+            title: String::new(),
+            description: String::new(),
             score: 0,
             internal_links: None,
             external_links: None,
@@ -54,6 +60,29 @@ impl Page {
         let mut internal_links = Vec::<String>::new();
         let mut external_links = Vec::<String>::new();
         let website_regex = Regex::new(r"(?m)^(https?:\/\/)?[\w\/\.]+\.[\w?=\/]+$(?m)").unwrap();
+
+        //these do currently not work...
+        let title_regex = Regex::new(r#"(?m)^<title>.+<\/title>$(?m)"#).unwrap();
+        let description_regex = Regex::new(r#"(?m)^<meta name="description" content=".+" /?>$(?m)"#).unwrap();
+        let content_regex = Regex::new("(?m)^content=\".+\"$(?m)").unwrap();
+
+        self.title = match title_regex.find(&html) {
+            Some(title) => title.clone().as_str().strip_prefix("<title>").unwrap_or(title.as_str()).strip_suffix("</title").unwrap_or(title.as_str()).to_string(),
+            None => String::new(),
+        };
+
+        println!("title: {:?}", title_regex.find(&html));
+        println!("desc: {:?}", description_regex.find(&html));
+        
+        self.description = match description_regex.find(&html) {
+            Some(desc) => {
+                match content_regex.find(desc.as_str()) {
+                    Some(content) => content.clone().as_str().strip_prefix("content=\"").unwrap_or(content.as_str()).strip_suffix("\"").unwrap_or(content.as_str()).to_string(),
+                    None => String::new(),
+                }
+            },
+            None => String::new()
+        };
 
         //get links
         loop {
@@ -88,7 +117,7 @@ impl Page {
                                     } 
                                 }
                             })
-                        }
+                        },
                         _ => (),
                     }
                 }

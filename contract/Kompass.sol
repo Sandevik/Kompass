@@ -31,6 +31,8 @@ contract Kompass {
     }
 
     struct Page {
+        string title;
+        string description;
         string[] internal_links;
         string[] external_links;
         uint16 score;
