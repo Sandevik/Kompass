@@ -17,7 +17,7 @@ export default function SearchArea({}) {
   
 
   return (
-    <div className="flex bg-gray-200 p-4 gap-5 items-center border-b-2 border-gray-300 bg-opacity-70 ">
+    <div className="flex bg-gray-200 p-4 gap-5 items-center border-b-2 border-gray-300 bg-opacity-80 ">
         <div className="flex w-full items-center gap-5">
         <Link href="/" className="flex items-center gap-2 px-2">
           <img src="/Kompass2d.png" className="h-12 w-12" alt="Kompass logo" />
