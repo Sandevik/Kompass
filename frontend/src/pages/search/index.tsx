@@ -1,13 +1,18 @@
+import SearchArea from '@/components/SearchArea';
 import { useSearchParams } from 'next/navigation'
-import React from 'react'
+import { useRouter } from 'next/router';
+
 
 export default function index() {
-
-    const searchParams = useSearchParams();
 
 
 
   return (
-    <div>{searchParams.get("q")}</div>
+    <main className="bg-gray-200 h-[100vh]">
+
+      <SearchArea />
+      
+      
+    </main>
   )
 }
