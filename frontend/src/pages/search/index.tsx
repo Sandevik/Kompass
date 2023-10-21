@@ -68,8 +68,6 @@ const domains: Domain[] = [
 
 export default function index() {
 
-  
-
   const getRelevantPage = (domain: Domain): Page => {
     let currentPage: Page = {} as Page;
     let hightestScore: number = 0; 
@@ -86,12 +84,8 @@ export default function index() {
     <main className="bg-gray-300 h-[100vh]">
 
       <SearchArea />
-
       <SER pages={domains.map(domain => (getRelevantPage(domain)))}/>
 
-
-      
-      
     </main>
   )
 }
